@@ -11,16 +11,8 @@ import streamlit as  st
 import pandas as pd
 import numpy as np
 import datetime as dt
-from sklearn.preprocessing import StandardScaler
-import datetime as dt
-import pickle
-from pickle import *
-import plotly.express as px
-from pycaret.regression import *
-import cv2
+from pickle import  *
 regression =load_model('deployment_28042021')
-#classification =load_model('classification')
-num=dict()
 
 
 def predict(model,input_df):
@@ -28,7 +20,7 @@ def predict(model,input_df):
     predictions=predictions_df
     return predictions
 def run(): 
-    add_selectbox=st.sidebar.selectbox("how would you to predict",("online","fichier","training","graph"))
+    add_selectbox=st.sidebar.selectbox("how would you to predict",("online","fichier","graph"))
     st.sidebar.success('https://www.pycaret.org')
     if(add_selectbox=='online'):
         f1 = open ("column","rb")
@@ -50,15 +42,15 @@ def run():
             data_predict[col]=data_predict[col].map(num)
         for col in data_predict.select_dtypes(include=['datetime64']):
             data_predict[col]=data_predict[col].map(dt.datetime.toordinal)            
-        st.write(data_predict)
         if(st.button("predict")):
             output=predict(model=regression,input_df=data_predict)
             st.write(int(output['Label']))
     if(add_selectbox=='fichier'):  
         file_upl=st.file_uploader("Upload excel file for predictions" ,type=["xlsx"])
         if(file_upl is not None):
-            data_predict1=pd.read_excel(file_upl)
-            for col in data.select_dtypes(include=['object']):
+            data=pd.read_excel(file_upl)
+            data_predict1=data.copy()
+            for col in data_predict1.select_dtypes(include=['object']):
                 f = open (col,"rb")
                 num=load(f)
                 data_predict1[col]=data_predict1[col].map(num)
